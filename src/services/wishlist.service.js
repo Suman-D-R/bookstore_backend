@@ -1,8 +1,15 @@
 import { error } from '@hapi/joi/lib/base';
 import WishList from '../models/wishlist';
+import Book from '../models/book.model';
 
 export const addToWishlist = async (bookDetails) => {
   try {
+    console.log(bookDetails)
+
+    const bookData = await Book.findOne({ _id: bookDetails.book_id });
+    if(!bookData){
+      throw new Error("book not found")
+    }
     const wislListData = await WishList.findOne({
       user_id: bookDetails.user_id
     });
@@ -12,9 +19,9 @@ export const addToWishlist = async (bookDetails) => {
         user_id: bookDetails.user_id,
         items: [
           {
-            book_id: bookDetails._id,
-            bookName: bookDetails.bookName,
-            price: bookDetails.price
+            book_id: bookData._id,
+            bookName: bookData.bookName,
+            price: bookData.price
           }
         ]
       });
@@ -22,9 +29,9 @@ export const addToWishlist = async (bookDetails) => {
     }
 
     wislListData.items.push({
-      book_id: bookDetails._id,
-      bookName: bookDetails.bookName,
-      price: bookDetails.price
+      book_id: bookData._id,
+      bookName: bookData.bookName,
+      price: bookData.price
     });
     await wislListData.save();
 
