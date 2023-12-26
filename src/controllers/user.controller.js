@@ -26,7 +26,24 @@ export const userRegistration = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const data = await UserService.loginUser(req.body);
+    if (data) {
+      res.status(HttpStatus.OK).json({
+        code: HttpStatus.Ok,
+        data: data,
+        message: 'User created successfully'
+      });
+    }
+  } catch (error) {
+    res.status(HttpStatus.UNAUTHORIZED).json({
+      code: HttpStatus.UNAUTHORIZED,
+      message: error.message
+    });
+  }
+};
 
+export const getUserdetails = async (req, res) => {
+  try {
+    const data = await UserService.userDetails(req.body);
     if (data) {
       res.status(HttpStatus.OK).json({
         code: HttpStatus.Ok,
