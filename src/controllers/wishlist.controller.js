@@ -3,7 +3,7 @@ import * as wishlist from '../services/wishlist.service';
 
 export const addToWishlist = async (req, res) => {
   try {
-    const data = await wishlist.addToWishlist(req.body);
+    const data = await wishlist.addToWishlist(req.params._id,req.body);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data
