@@ -17,7 +17,7 @@ export const loginUser = async (userDetails) => {
     throw new Error('Password not matched');
   }
   var token = jwt.sign(
-    { _id: user._id, email: user.email },
+    { _id: user._id, email: user.email , name: user.firstName },
     process.env.SECRET_KEY
   );
 
@@ -35,3 +35,17 @@ export const userRegistration = async (body) => {
   const data = await User.create(body);
   return data;
 };
+
+export const userDetails = async (body) =>{
+  try{const data = await User.findOne({_id:body.user_id});
+
+  if(!data){
+    throw new Error('user not found')
+  }
+
+  return data}
+  catch(error){
+    throw new Error(error)
+  }
+
+}
