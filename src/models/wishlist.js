@@ -14,6 +14,9 @@ const wishlistSchema = new Schema({
       },
       price: {
         type: Number
+      },
+      bookImage: {
+        type: String
       }
     }
   ]

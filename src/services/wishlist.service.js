@@ -1,38 +1,70 @@
 import { error } from '@hapi/joi/lib/base';
 import WishList from '../models/wishlist';
+import Book from '../models/book.model';
 
-export const addToWishlist = async (bookDetails) => {
+export const addToWishlist = async (book_id, bookDetails) => {
   try {
-    const wislListData = await WishList.findOne({
-      user_id: bookDetails.user_id
-    });
+    console.log(bookDetails);
 
-    if (!wislListData) {
+    const bookData = await Book.findOne({ _id: book_id });
+    if (!bookData) {
+      throw new Error("book not found");
+    }
+
+    let wishlistData = await WishList.findOne({ user_id: bookDetails.user_id });
+
+    if (!wishlistData) {
+      // If wishlist doesn't exist, create a new one with the item
       const data = await WishList.create({
         user_id: bookDetails.user_id,
         items: [
           {
-            book_id: bookDetails._id,
-            bookName: bookDetails.bookName,
-            price: bookDetails.price
-          }
-        ]
+            book_id: bookData._id,
+            bookName: bookData.bookName,
+            price: bookData.price,
+            bookImage: bookData.bookImage,
+          },
+        ],
       });
       return data;
     }
 
-    wislListData.items.push({
-      book_id: bookDetails._id,
-      bookName: bookDetails.bookName,
-      price: bookDetails.price
-    });
-    await wislListData.save();
+    // Check if the item is already in the wishlist
+    const isItemInWishlist = wishlistData.items.some(
+      (item) => item.book_id === book_id
+    );
 
-    return wislListData;
+    if (isItemInWishlist) {
+      // If item is in the wishlist, remove it
+      wishlistData = await WishList.findOneAndUpdate(
+        { user_id: bookDetails.user_id },
+        { $pull: { items: { book_id: book_id } } },
+        { new: true }
+      );
+    } else {
+      // If item is not in the wishlist, add it
+      wishlistData = await WishList.findOneAndUpdate(
+        { user_id: bookDetails.user_id },
+        {
+          $push: {
+            items: {
+              book_id: bookData._id,
+              bookName: bookData.bookName,
+              price: bookData.price,
+              bookImage: bookData.bookImage,
+            },
+          },
+        },
+        { new: true }
+      );
+    }
+
+    return wishlistData;
   } catch (error) {
-    throw new Error('Error adding to cart: ' + error.message);
+    throw new Error('Error updating wishlist: ' + error.message);
   }
 };
+
 
 export const getAllWishListitems = async (userDetails) => {
   try {
