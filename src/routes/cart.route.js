@@ -4,10 +4,12 @@ import { userAuth } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.post('/', userAuth, cartController.addToCart);
+router.post('/:_id', userAuth, cartController.addToCart);
 
 router.get('/', userAuth, cartController.getAllCartitems);
 
 router.delete('/:_id', userAuth, cartController.removeFromCart);
+
+router.put('/:_id', userAuth, cartController.isPurchase);
 
 export default router;

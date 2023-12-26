@@ -9,6 +9,9 @@ const cartSchema = new Schema({
       book_id: {
         type: String
       },
+      bookImage:{
+        type:String
+      },
       bookName: {
         type: String
       },
