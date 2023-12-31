@@ -23,7 +23,7 @@ const addressSchema = Schema({
             },
             type:{
               type: String
-            }
+            },
           }
     ]
 })

@@ -31,23 +31,23 @@ const orderSchema = new Schema({
       },
       orderDate:{
         type: Date
-      }
-    }
-  ],
-  address: [
-    {
-      address: {
-        type: String
       },
-      city:{
-        type: String
-      },
-      state:{
-        type: String
-      },
-      type:{
-        type: String
-      }
+      address: [
+        {
+          address: {
+            type: String
+          },
+          city:{
+            type: String
+          },
+          state:{
+            type: String
+          },
+          type:{
+            type: String
+          }
+        }
+      ]
     }
   ],
 });

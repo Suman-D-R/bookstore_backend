@@ -4,7 +4,7 @@ import { userAuth } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.post('/',userAuth, orderController.addToOrder);
+router.post('/',userAuth , orderController.addToOrder);
 
 router.get('/',userAuth, orderController.getOrders);
 

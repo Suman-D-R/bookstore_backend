@@ -2,33 +2,41 @@ import Address from '../models/address.model';
 
 export const addAddress = async (userDetails) => {
   try {
-    const userData = await Address.findOne({ user_id: userDetails.user_id });
+
+    const {data,user_id}= userDetails;
+    const userData = await Address.findOne({ user_id: user_id });
+
+    
 
     if (!userData) {
-      const data = await Address.create({
-        user_id: userDetails.user_id,
+      const response = await Address.create({
+        user_id: user_id,
         address: [
           {
-            fullName: userDetails.fullName,
-            mobileNumber: userDetails.mobileNumber,
-            address: userDetails.address,
-            city: userDetails.city,
-            state: userDetails.state,
-            type: userDetails.type
+            fullName: data.fullName,
+            mobileNumber: data.mobileNumber,
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            type: data.type
           }
         ]
       });
-      return data;
+      return response;
     }
 
     userData.address.push({
-      fullName: userDetails.fullName,
-      mobileNumber: userDetails.mobileNumber,
-      address: userDetails.address,
-      city: userDetails.city,
-      state: userDetails.state,
-      type: userDetails.type
+      fullName: data.fullName,
+      mobileNumber: data.mobileNumber,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      type: data.type
     });
+
+    console.log(userData);
+
+    userData.save();
 
     return userData;
   } catch (error) {

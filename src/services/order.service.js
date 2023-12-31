@@ -1,31 +1,42 @@
 import Order from '../models/order.model';
 import Cart from '../models/cart.model';
+import Address from '../models/address.model';
 
 export const addToOrder = async (bookDetails) => {
   try {
-    console.log(bookDetails)
     const cartItems = await Cart.findOne({ user_id: bookDetails.user_id });
     if(!cartItems){
       throw new Error("no cart items")
     }
+    const address = await Address.findOne({user_id: bookDetails.user_id});
+    if(!address){
+      throw new Error("no address found ")
+    }
+    const addressData = address.address.find((val)=>val._id == bookDetails.data)
+    if (!addressData) {
+      throw new Error("Address not found for the specified _id");
+    }
+    
+
     const orderData = await Order.findOne({ user_id: bookDetails.user_id });
 
     
 
     if (!orderData) {
-
+     console.log("sadhbfjfvihsdfhisdfsdf")
       const data = await Order.create({
         user_id: bookDetails.user_id,
-        orderData:[{items: cartItems.items,
+        orderData:[{
+        items: cartItems.items,
         total: cartItems.price,
         address: [
           {
-            // fullName:bookDetails.fullName,
-            // mobileNumber:bookDetails.mobileNumber,
-            address: bookDetails.address,
-            city: bookDetails.city,
-            state: bookDetails.state,
-            type: bookDetails.type
+            fullName:addressData.fullName,
+            mobileNumber:addressData.mobileNumber,
+            address: addressData.address,
+            city: addressData.city,
+            state: addressData.state,
+            type: addressData.type,
           }
         ],}]
         // date: bookDetails.data
@@ -41,13 +52,12 @@ export const addToOrder = async (bookDetails) => {
       total: cartItems.price,
       address: [
         {
-          address: bookDetails.address,
-          city: bookDetails.city,
-          state: bookDetails.state,
-          type: bookDetails.type
+          address: addressData.address,
+          city: addressData.city,
+          state: addressData.state,
+          type: addressData.type
         }
       ],
-      date: bookDetails.data
     });
     await orderData.save();
 
